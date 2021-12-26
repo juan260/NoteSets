@@ -129,7 +129,7 @@ public class ChordOscHandler{
             Std.mtof(newChord[i]) => oscillators[i].freq;
         }
         
-        setCurrentlySoundingNotes(Std.ftoi(Math.min(newChord.cap(), maxNotes));
+        setCurrentlySoundingNotes(Std.ftoi(Math.min(newChord.cap(), maxNotes)));
         return 1;
     }
     
