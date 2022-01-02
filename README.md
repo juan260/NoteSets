@@ -1,6 +1,6 @@
 # NoteSets
 
-NoteSets is a library for Chuck, designed to add functionality to support scales
+NoteSets is a library for ChucK, designed to add functionality to support scales
 and chords in an abstract way. It is part of two bigger projects:
 
 * [Loosy Synth](https://www.github.com/juan260/LoosySynth/) is a music synthesizer controlled by OSC protocol with a special interface designed to be controlled from an external device, such as a mobile phone or a VR headset.
