@@ -160,13 +160,15 @@ public class ChordOscHandler{
     }
 } 
 
-
+//         Abstract class that expresses a chord voice
 
 private class ChordVoice{
     fun void freq(float f){}
     fun void gain(float g){}
     fun void connect(UGen out){}
 }
+
+//           This voice uses other voices
 
 private class UnisonVoice extends ChordVoice{
     BPF eqBand1;
@@ -200,6 +202,8 @@ private class UnisonVoice extends ChordVoice{
 }
 
 
+//        Sawtooth voice
+
 private class SawVoice extends ChordVoice{
     SawOsc oscillator;
     fun void freq(float f){
@@ -213,7 +217,7 @@ private class SawVoice extends ChordVoice{
     }
 }
 
-// UNUSED
+// UNUSED clarinet voice
 private class ClarinetVoice extends ChordVoice{
     Clarinet oscillator;
     Std.rand2f(0.4, 0.7)=>oscillator.vibratoGain;
@@ -238,7 +242,7 @@ private class ClarinetVoice extends ChordVoice{
 }
 
 
-//UNUSED
+//       Bowed voice
 private class BowedVoice extends ChordVoice{
     Bowed oscillator;
    Std.rand2f(0.01, 0.07)=>oscillator.vibratoGain;
@@ -265,6 +269,7 @@ private class BowedVoice extends ChordVoice{
 }
 
 
+//       Moog voice
 private class MoogVoice extends ChordVoice{
     Moog oscillator;
     0 => oscillator.filterQ;
@@ -285,7 +290,7 @@ private class MoogVoice extends ChordVoice{
     }
 }
 
-//UNUSED
+//UNUSED Saxofony voice
 private class SaxofonyVoice extends ChordVoice{
     Saxofony oscillator;
     Std.rand2f(0.4, 0.8)=>oscillator.vibratoGain;
