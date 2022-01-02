@@ -130,7 +130,7 @@ public class ChordOscHandler{
             return 0;
         int i;
         for(0=>i; i<Math.min(newChord.cap(), maxNotes);i++){
-            <<< newChord[i]>>>;
+            
             Std.mtof(newChord[i])/2 => oscillators[i].freq;
         }
         
