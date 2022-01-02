@@ -13,18 +13,16 @@
 
 public class ChordOscHandler{
 
-    10 => int maxNotes; // MACRO: Maximum number of notes
+    30 => int maxNotes; // MACRO: Maximum number of notes
     1 => int currentlySoundingNotes; // Number of currently sounding notes
     UnisonVoice oscillators[maxNotes]; // Array of oscillators
-    //SawOsc oscillators[maxNotes];
-    LPF filter; // Low pass filter
-    
+    LPF filterL; // Low pass filter
+    LPF filterR;
     float gain; // Overall gain
     
     // We connect all of the oscillators to the filter
     for(0 => int i; i<maxNotes;i++){
-        oscillators[i].connect(filter);
-        //oscillators[i] => filter;
+        oscillators[i].connect(filterL, filterR);
     }
     
     // Create the chord handler
@@ -55,15 +53,14 @@ public class ChordOscHandler{
 
     fun int setMaxNotes(int n){
         
-        UnisonVoice newOscillators[n];
+        UnisonVoice @ newOscillators[n];
         int i;
         for(0=>i;i<maxNotes;i++){
                oscillators[i] @=> newOscillators[i];
         }
         for(;i<n;i++){
-                //createNewOsc() @=> newOscillators[i]; 
-                newOscillators[i].connect(filter);
-                //newOscillators[i] => filter;
+                createNewOsc() @=> newOscillators[i]; 
+                newOscillators[i].connect(filterL, filterR);
         }
         newOscillators @=> oscillators; 
         Std.ftoi(Math.max(1.0,n)) => maxNotes;
@@ -75,8 +72,9 @@ public class ChordOscHandler{
 //        to then go through a filter, call this function with that filter as an argument.
 //        Ins: the module we wan to connect with.
     
-    fun void connect(UGen output){
-        filter => output;
+    fun void connect(UGen outputL, UGen outputR){
+        filterL => outputL;
+        filterR => outputR;
     }
     
     
@@ -105,8 +103,8 @@ public class ChordOscHandler{
 //        Ins: the cutoff frequency
     
     fun void setFilterCutoff(float cutoff){
-        if(cutoff <7000)
-            cutoff => filter.freq;
+        cutoff => filterL.freq;
+        cutoff => filterR.freq;
     }
     
     
@@ -169,36 +167,54 @@ private class ChordVoice{
 }
 
 private class UnisonVoice extends ChordVoice{
+    
     BPF eqBand1;
     
-    SawOsc saw => LPF sawFilter => eqBand1;
-    BowedVoice bowed;
-    MoogVoice moog;
-    bowed.connect(eqBand1);
-    moog.connect(eqBand1);
+       90 => eqBand1.freq;
+        2.0 => eqBand1.gain;
+        0.3 => eqBand1.Q;
+    
 
-    300 => sawFilter.freq;
-    90 => eqBand1.freq;
-    2.0 => eqBand1.gain;
-    0.3 => eqBand1.Q;
+    SawVoice saw;
+    //ClarinetVoice clarinet;
+    //BowedVoice bowed;
+    //MoogVoice moog;
+    //SaxofonyVoice sax;
+ 
+    
+    saw.connect(pan);
+    //clarinet.connect(pans[1]);
+    //bowed.connect(pans[1]);
+    //moog.connect(pans[3]);
+    //sax.connect(pans[3]);
+    Std.rand2f(0.9, 1.0) => saw.gain;
+    //Std.rand2f(0.9, 1.0) => clarinet.gain;
+    //Std.rand2f(0.9, 1.0) => bowed.gain;
+    //Std.rand2f(0.9, 1.0) => moog.gain;
+    //Std.rand2f(0.9, 1.0) => sax.gain;
+    
 
+    
     fun void freq(float f){
-        f => saw.freq;
-        f => bowed.freq;
-        f=> moog.freq;
+        saw.freq(f);
+        //clarinet.freq(f);
+        //bowed.freq(f);
+        //moog.freq(f);
+        //sax.freq(f);
     }
 
     fun void gain(float g){
-        g/4 => saw.gain;
-       g/3 => bowed.gain;
-       g/3 => moog.gain;
-
+        g/5 => eqBand1.gain;
+        
     }
-    fun void connect(UGen out){
+
+    fun void connect(UGen outL){
+    
         eqBand1 => out;
+        
+       
     }
 }
-
 
 private class SawVoice extends ChordVoice{
     SawOsc oscillator;
@@ -213,7 +229,6 @@ private class SawVoice extends ChordVoice{
     }
 }
 
-// UNUSED
 private class ClarinetVoice extends ChordVoice{
     Clarinet oscillator;
     Std.rand2f(0.4, 0.7)=>oscillator.vibratoGain;
@@ -238,7 +253,7 @@ private class ClarinetVoice extends ChordVoice{
 }
 
 
-//UNUSED
+
 private class BowedVoice extends ChordVoice{
     Bowed oscillator;
    Std.rand2f(0.01, 0.07)=>oscillator.vibratoGain;
@@ -264,7 +279,6 @@ private class BowedVoice extends ChordVoice{
     }
 }
 
-
 private class MoogVoice extends ChordVoice{
     Moog oscillator;
     0 => oscillator.filterQ;
@@ -275,7 +289,7 @@ private class MoogVoice extends ChordVoice{
     440 => oscillator.freq;
     
     fun void freq(float f){
-        f*2 => oscillator.freq;
+        f => oscillator.freq;
     }
     fun void gain(float g){
         g => oscillator.gain;
@@ -285,7 +299,6 @@ private class MoogVoice extends ChordVoice{
     }
 }
 
-//UNUSED
 private class SaxofonyVoice extends ChordVoice{
     Saxofony oscillator;
     Std.rand2f(0.4, 0.8)=>oscillator.vibratoGain;

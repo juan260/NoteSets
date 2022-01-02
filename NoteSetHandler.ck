@@ -12,7 +12,7 @@ public class NoteSetHandler{
     
     127 => int maxNoteTableSize; // MACRO: maximum table size
     
-    127 => int maxNoteSets;       // MACRO: maximum number of note sets
+    50 => int maxNoteSets;       // MACRO: maximum number of note sets
     
     float noteTables[0][maxNoteTableSize]; // Note set 2D table (indexed)
     string knownNotes[maxNoteSets]; // Table with the dictionary entries of the note set table
